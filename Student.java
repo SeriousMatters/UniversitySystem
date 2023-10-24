@@ -36,20 +36,25 @@ public class Student implements Serializable{
 
     // check email and password pattern
     public static boolean validateEmailAndPassword(String email, String password){
-        
+        return (validateEmail(email) && validatePassword(password));
+    }
+
+    public static boolean validateEmail(String email){
         // Email regex pattern
         String emailRegex = "^[A-Za-z0-9+_.-]+@university.com$";
         Pattern emailPattern = Pattern.compile(emailRegex);
         Matcher emailMatcher = emailPattern.matcher(email);
+        return emailMatcher.matches();
+    }
 
+    public static boolean validatePassword(String password){
         // Password regex pattern
         String passwordRegex = "^[A-Z][A-Za-z]{5,}[0-9]{3,}$";
         Pattern passwordPattern = Pattern.compile(passwordRegex);
         Matcher passwordMatcher = passwordPattern.matcher(password);
-
-        return (emailMatcher.matches() && passwordMatcher.matches());
+        return passwordMatcher.matches();
     }
-
+    
     private int generateRandomID() {
         Random random = new Random();
         return random.nextInt(900000) + 100000; 
