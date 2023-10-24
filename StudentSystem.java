@@ -11,8 +11,7 @@ public class StudentSystem {
             choice = Character.toUpperCase(scanner.next().charAt(0));
             switch (choice) {
                 case 'L':
-                     System.out.println("Enrolling in a course...");
-                    // Add logic for enrolling in a course
+                    signIn();
                     break;
                 case 'R':
                     signUp();
@@ -74,4 +73,47 @@ public class StudentSystem {
             }
         }
     }
+
+    public static void signIn() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Student Sign In");
+        boolean flag = false;
+        while(!flag) {
+            System.out.print("Email: ");
+            String email = scanner.next();
+            System.out.print("Password: ");
+            String password = scanner.next();
+
+            // Validate email or email
+            if (!Student.validateEmailAndPassword(email, password)) {
+                flag = false;
+                System.out.println("Incorrect email or password format");
+            }
+            else{
+                flag = true;
+                System.out.println("email and password formats accepted");
+            }
+
+            if(flag) {
+                // Create and add the student to the database using the 1st constructor
+                // Student student = new Student(email, password);
+                List<Student> students = Database.readAllStudents();
+                boolean exists = false;
+                for (Student existingStudent : students) {
+                    if (existingStudent.getEmail().equals(email)) {
+                        if (existingStudent.getPassword().equals(password)) {
+                            exists = true;
+                            StudentCourseSystem.studentCourseMenu(email);
+                        }
+                        break;
+                    }
+                }
+                if (!exists) {
+                    System.out.println("Student not exist");
+                }
+            }
+        }
+    }
+
 }

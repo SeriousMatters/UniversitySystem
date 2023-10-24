@@ -87,10 +87,6 @@ public class Student implements Serializable{
         return averageMark >= 50;
     }
 
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
-    }
-
     // Getter and setter methods for other fields
 
     public int getId() {
@@ -107,6 +103,14 @@ public class Student implements Serializable{
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
     }
 
     // Subject class (assuming it exists)
@@ -126,6 +130,5 @@ public class Student implements Serializable{
             return mark;
         }
 
-        // Getter and setter methods for other fields
     }
 }
