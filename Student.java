@@ -34,68 +34,20 @@ public class Student implements Serializable{
         this.subjects = new ArrayList<>();
     }
 
-    // signUp method 
-    public static void signUp() {
-        Scanner scanner = new Scanner(System.in);
-
+    // check email and password pattern
+    public static boolean validateEmailAndPassword(String email, String password){
+        
         // Email regex pattern
         String emailRegex = "^[A-Za-z0-9+_.-]+@university.com$";
         Pattern emailPattern = Pattern.compile(emailRegex);
+        Matcher emailMatcher = emailPattern.matcher(email);
 
         // Password regex pattern
         String passwordRegex = "^[A-Z][A-Za-z]{5,}[0-9]{3,}$";
         Pattern passwordPattern = Pattern.compile(passwordRegex);
+        Matcher passwordMatcher = passwordPattern.matcher(password);
 
-        System.out.println("Student Sign Up");
-        boolean flag = false;
-        while(!flag) {
-            System.out.print("Email: ");
-            String email = scanner.next();
-            System.out.print("Password: ");
-            String password = scanner.next();
-
-            // Validate email or email
-            Matcher emailMatcher = emailPattern.matcher(email);
-            Matcher passwordMatcher = passwordPattern.matcher(password);
-            //!emailMatcher.matches()||!passwordMatcher.matches()
-            if (!emailMatcher.matches()||!passwordMatcher.matches()) {
-                flag = false;
-                System.out.println("Incorrect email or password format");
-            }
-            else{
-                flag = true;
-            }
-
-            if(flag){
-                // Create and add the student to the database using the 1st constructor
-                System.out.println("email and password formats accepted");
-                Student student = new Student(email, password);
-                List<Student> students = Database.readAllStudents();
-                boolean exists = false;
-                for (Student existingStudent : students) {
-                    if (existingStudent.getEmail().equals(student.getEmail())) {
-                        exists = true;
-                        break;
-                    }
-                }
-                if (exists) {
-                    String subname = email.substring(0, email.indexOf('@'));
-                    String[] token = subname.split(".");
-                    System.out.println(token[0]+" "+token[1]+" already exists");
-                } else {
-                    System.out.print("Name: ");
-                    String name = scanner.next();
-                    student.name = name;
-                    students.add(student);
-                    Database.writeObjectsToFile(students);
-                    System.out.println("Student added to the database.");
-                }
-
-
-            }
-        }
-
-
+        return (emailMatcher.matches() && passwordMatcher.matches());
     }
 
     private int generateRandomID() {
@@ -147,6 +99,10 @@ public class Student implements Serializable{
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
