@@ -9,23 +9,25 @@ public class Database {
 
     // @SuppressWarnings("unchecked")
     // public static List<Student> readStudentsFromFile() {
-    //     try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filePath))) {
-    //         return (List<Student>) inputStream.readObject();
-    //     } catch (IOException | ClassNotFoundException e) {
-    //         e.printStackTrace();
-    //         System.out.println("Error reading student data from the file.");
-    //     }
-    //     return new ArrayList<>();
+    // try (ObjectInputStream inputStream = new ObjectInputStream(new
+    // FileInputStream(filePath))) {
+    // return (List<Student>) inputStream.readObject();
+    // } catch (IOException | ClassNotFoundException e) {
+    // e.printStackTrace();
+    // System.out.println("Error reading student data from the file.");
+    // }
+    // return new ArrayList<>();
     // }
 
     // public static void writeStudentsToFile(List<Student> studentList) {
-    //     try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filePath))) {
-    //         outputStream.writeObject(studentList);
-    //         System.out.println("Student data written to the file.");
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //         System.out.println("Error writing student data to the file.");
-    //     }
+    // try (ObjectOutputStream outputStream = new ObjectOutputStream(new
+    // FileOutputStream(filePath))) {
+    // outputStream.writeObject(studentList);
+    // System.out.println("Student data written to the file.");
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // System.out.println("Error writing student data to the file.");
+    // }
     // }
 
     public void checkIfFileExists() {
@@ -62,9 +64,6 @@ public class Database {
         }
     }
 
-
-
-
     public static String getFilePath() {
         return filePath;
     }
@@ -82,26 +81,26 @@ public class Database {
             System.out.println("Failed to save student data: " + e.getMessage());
         }
     }
-    
 
     // public static List<Student> readStudentsFromFile(String filePath) {
-    //     List<Student> students = new ArrayList<>();
-    //     File file = new File(filePath);
-    
-    //     if (file.exists()) {
-    //         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filePath))) {
-    //             // Your existing code to read the students
-    //         } catch (IOException e) {
-    //             e.printStackTrace();
-    //             System.out.println("Error reading student data from the file.");
-    //         }
-    //     } else {
-    //         System.out.println("Student data file does not exist.");
-    //     }
-    
-    //     return students;
+    // List<Student> students = new ArrayList<>();
+    // File file = new File(filePath);
+
+    // if (file.exists()) {
+    // try (ObjectInputStream inputStream = new ObjectInputStream(new
+    // FileInputStream(filePath))) {
+    // // Your existing code to read the students
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // System.out.println("Error reading student data from the file.");
     // }
-    
+    // } else {
+    // System.out.println("Student data file does not exist.");
+    // }
+
+    // return students;
+    // }
+
     public static List<Student> readStudentsFromFile() {
         List<Student> students = new ArrayList<>();
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filePath))) {
@@ -133,13 +132,13 @@ public class Database {
         return students;
     }
 
-        public static List<Student> getStudents() {
+    public static List<Student> getStudents() {
         return readStudentsFromFile();
     }
 
     public static void updateStudent(Student student) {
         List<Student> students = readStudentsFromFile();
-    
+
         if (students != null) {
             for (int i = 0; i < students.size(); i++) {
                 if (students.get(i).getEmail().equals(student.getEmail())) {
@@ -147,25 +146,37 @@ public class Database {
                     break; // No need to continue searching
                 }
             }
-    
+
             saveStudentsToFile(students); // Save the updated list of students to the database
         }
     }
-    
+
     // public static void updateStudent(Student student) {
-    //     List<Student> students = readStudentsFromFile();
-    
-    //     if (students != null) {
-    //         for (int i = 0; i < students.size(); i++) {
-    //             if (students.get(i).getEmail().equals(student.getEmail())) {
-    //                 students.set(i, student); // Replace the existing student with the updated student
-    //                 saveStudentsToFile(students); // Save the updated list of students to the database
-    //                 return;
-    //             }
-    //         }
-    //     }
+    // List<Student> students = readStudentsFromFile();
+
+    // if (students != null) {
+    // for (int i = 0; i < students.size(); i++) {
+    // if (students.get(i).getEmail().equals(student.getEmail())) {
+    // students.set(i, student); // Replace the existing student with the updated
+    // student
+    // saveStudentsToFile(students); // Save the updated list of students to the
+    // database
+    // return;
     // }
-    
-    
+    // }
+    // }
+    // }
+
+    public static void main(String[] args) {
+        Database db = new Database();
+
+        // Check if file exists
+        db.checkIfFileExists();
+
+        // Create file if it doesn't exist
+        db.createFileIfNotExists();
+
+        // ... any other method calls you want to test
+    }
 
 }
