@@ -1,139 +1,256 @@
+package UNIENROLSYSTEM;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Student implements Serializable{
+public class Student implements Serializable {
+    private static final int MAX_ENROLLED_SUBJECTS = 5;
     private static final long serialVersionUID = 1L;
-    private static final int MAX_SUBJECTS = 4;//max 4 course
-    private static final int MIN_MARK = 25;
-    private static final int MAX_MARK = 100;
-    private int id;
+    private String id;
     private String name;
     private String email;
     private String password;
-    private List<Subject> subjects;
-    
-    //1st constructor
-    public Student(String email, String password) {
-        this.id = generateRandomID();
-        this.name = "";
-        this.email = email;
-        this.password = password;
-        this.subjects = new ArrayList<>();
-    }
-    //2st constructor
+    private int mark;
+    private String grade;
+    private List<Subject> Subjects;
+
     public Student(String name, String email, String password) {
         this.id = generateRandomID();
         this.name = name;
         this.email = email;
         this.password = password;
-        this.subjects = new ArrayList<>();
+        this.Subjects = new ArrayList<>();
     }
 
-    // check email and password pattern
-    public static boolean validateEmailAndPassword(String email, String password){
-        return (validateEmail(email) && validatePassword(password));
+    // Method to generate a random student ID
+    private String generateRandomID() {
+        Random rand = new Random();
+        int randomInt = rand.nextInt(100000); // Generates a random number between 0 and 99999
+        return String.format("%05d", randomInt); // Format as a 5-digit string
     }
 
-    public static boolean validateEmail(String email){
-        // Email regex pattern
-        String emailRegex = "^[A-Za-z0-9+_.-]+@university.com$";
-        Pattern emailPattern = Pattern.compile(emailRegex);
-        Matcher emailMatcher = emailPattern.matcher(email);
-        return emailMatcher.matches();
-    }
-
-    public static boolean validatePassword(String password){
-        // Password regex pattern
-        String passwordRegex = "^[A-Z][A-Za-z]{5,}[0-9]{3,}$";
-        Pattern passwordPattern = Pattern.compile(passwordRegex);
-        Matcher passwordMatcher = passwordPattern.matcher(password);
-        return passwordMatcher.matches();
-    }
-    
-    private int generateRandomID() {
-        Random random = new Random();
-        return random.nextInt(900000) + 100000; 
-    }
-
-    public void enrollSubject(Subject subject) {
-        if (subjects.size() < MAX_SUBJECTS) {
-            subject.setMark(generateRandomMark());
-            subjects.add(subject);
-        } else {
-            System.out.println("Student can only enroll in 4 subjects maximum.");
-        }
-    }
-
-    public void dropSubject(Subject subject) {
-        subjects.remove(subject);
-    }
-
-    private int generateRandomMark() {
-        Random random = new Random();
-        return random.nextInt(MAX_MARK - MIN_MARK + 1) + MIN_MARK;
-    }
-
-    public boolean passCourse() {
-        if (subjects.isEmpty()) {
-            return false;
-        }
-
-        int totalMarks = 0;
-        for (Subject subject : subjects) {
-            totalMarks += subject.getMark();
-        }
-
-        int averageMark = totalMarks / subjects.size();
-        return averageMark >= 50;
-    }
-
-    // Getter and setter methods for other fields
-
-    public int getId() {
-        return id;
+    public String getId() {
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getGrade() {
+        return this.grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
     public String getEmail() {
-        return email;
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
-    public void setPassword(String newPassword) {
-        this.password = newPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    // Subject class (assuming it exists)
-    class Subject {
-        private String name;
-        private int mark;
+    public boolean canEnrollMoreSubjects() {
+        return Subjects.size() < MAX_ENROLLED_SUBJECTS;
+    }
 
-        public Subject(String name) {
-            this.name = name;
+    public void enrollSubject(Subject subject) {
+        if (Subjects.size() < MAX_ENROLLED_SUBJECTS) {
+            Subjects.add(subject);
+            System.out.println("Enrolled in subject: " + subject);
+        } else {
+            System.out.println("You have already enrolled in the maximum number of subjects.");
         }
+    }
 
-        public void setMark(int mark) {
-            this.mark = mark;
+    public void dropSubject(Subject subject) {
+        Subjects.remove(subject);
+    }
+
+    public List<Subject> getEnrolledSubjects() {
+        return Subjects;
+    }
+
+    public double calculateAverageMark() {
+        int totalMark = 0;
+        for (Subject subject : Subjects) {
+            totalMark += subject.getMark();
         }
+        return Subjects.size() > 0 ? totalMark / (double) Subjects.size() : 0;
+    }
 
-        public int getMark() {
-            return mark;
+    public boolean isCoursePassed() {
+        return calculateAverageMark() >= 50;
+    }
+
+    public void setEnrolledSubjects(List<Subject> enrolledSubjects) {
+        this.Subjects = enrolledSubjects;
+    }
+
+    // Method to set a grade for a specific subject
+    public void setGrade(Subject subject, String grade) {
+        for (Subject enrolledSubject : Subjects) {
+            if (enrolledSubject.equals(subject)) {
+                enrolledSubject.setGrade(grade);
+                System.out.println("Grade for subject " + subject.getId() + " has been set to " + grade);
+                return;
+            }
         }
+        System.out.println("Subject not found in enrolled subjects.");
+    }
 
+    public String calculateOverallGrade() {
+        if (mark >= 85) {
+            return "HD";
+        } else if (mark >= 75) {
+            return "D";
+        } else if (mark >= 65) {
+            return "C";
+        } else if (mark >= 50) {
+            return "P";
+        } else if (mark >= 0) {
+            return "Z";
+        } else {
+            return "Invalid";
+        }
     }
 }
+
+
+// package UNIENROLSYSTEM;
+
+// import java.io.Serializable;
+// import java.util.ArrayList;
+// import java.util.List;
+// import java.util.Random;
+
+// public class Student implements Serializable {
+//     private static final int MAX_ENROLLED_SUBJECTS = 5;
+//     private static final long serialVersionUID = 1L;
+//     private String id;
+//     private String name;
+//     private String email;
+//     private String password;
+//     private String grade;
+//     private List<Subject> Subjects;
+
+//     public Student(String name, String email, String password) {
+//         this.id = generateRandomID();
+//         this.name = name;
+//         this.email = email;
+//         this.grade = grade;
+//         this.password = password;
+//         this.Subjects = new ArrayList<>();
+//     }
+
+//     public void setGrade(Subject subject, String grade) {
+//         for (Subject enrolledSubject : Subjects) {
+//             if (enrolledSubject.equals(subject)) {
+//                 enrolledSubject.setGrade(grade);
+//                 System.out.println("Grade for subject " + subject.getId() + " has been set to " + grade);
+//                 return;
+//             }
+//         }
+//         System.out.println("Subject not found in enrolled subjects.");
+//     }
+//     // Method to generate a random student ID
+//     private String generateRandomID() {
+//         Random rand = new Random();
+//         int randomInt = rand.nextInt(100000); // Generates a random number between 0 and 99999
+//         return String.format("%05d", randomInt); // Format as a 5-digit string
+//     }
+
+//     // Getters and Setters for name, email, password
+//     // Note: We do not provide a setter for id to ensure it's generated correctly
+//     public String getId() {
+//         return this.id;
+//     }
+
+//     public String getName() {
+//         return this.name;
+//     }
+
+//     public void setName(String name) {
+//         this.name = name;
+//     }
+
+//     public String getGrade() {
+//         return this.grade;
+//     }
+
+//     public void setGrade(String grade) {
+//         this.grade = grade;
+//     }
+
+//     public String getEmail() {
+//         return this.email;
+//     }
+
+//     public void setEmail(String email) {
+//         this.email = email;
+//     }
+
+//     public String getPassword() {
+//         return this.password;
+//     }
+
+//     public void setPassword(String password) {
+//         this.password = password;
+//     }
+
+//     // Methods for managing subjects
+//     public boolean canEnrollMoreSubjects() {
+//         return Subjects.size() < MAX_ENROLLED_SUBJECTS;
+//     }
+
+//     public void enrollSubject(Subject subject) {
+//         if (Subjects.size() < MAX_ENROLLED_SUBJECTS) {
+//             Subjects.add(subject);
+//             System.out.println("Enrolled in subject: " + subject);
+//         } else {
+//             System.out.println("You have already enrolled in the maximum number of subjects.");
+//         }
+//     }
+
+//     public void dropSubject(Subject subject) {
+//         Subjects.remove(subject);
+//     }
+
+//     public List<Subject> getEnrolledSubjects() {
+//         return Subjects;
+//     }
+
+//     public double calculateAverageMark() {
+//         int totalMark = 0;
+//         for (Subject subject : Subjects) {
+//             totalMark += subject.getMark();
+//         }
+//         return Subjects.size() > 0 ? totalMark / (double) Subjects.size() : 0;
+//     }
+
+//     public boolean isCoursePassed() {
+//         return calculateAverageMark() >= 50;
+//     }
+
+//     public void setEnrolledSubjects(List<Subject> enrolledSubjects) {
+//         this.Subjects = enrolledSubjects;
+//     }
+
+// }
